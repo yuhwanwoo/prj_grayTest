@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+  integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+  integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+  integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+{% endblock %}
+{% block body %}
+<div class="tab-content">
+  <div class="tab-pane container active" id="community1">
+
+
+  
+<div>
+  <h2>자소서 첨삭 게시판</h2>
+</div>
+<form class="form-inline my-2 my-md-0" method="get" action="{% url 'community:search' %}">
+  <input class="form-control" type="text" placeholder="Search" aria-label="Search" name="b" value="{{b}}">
+</form>
+<span>
+<div>
+  <table>
+    <colgroup>
+      <col width="28">
+      <col width="28">
+      <col width="427">
+      <col width="122">
+      <col width="100">
+      <col width="55">
+      <col width="55">
+    </colgroup>
+    <thead>
+      <tr>
+        <th colspan="2"></th>
+        <th scope="col">
+          <span>제목</span>
+        </th>
+        <th scope="col">작성자</th>
+        <th scope="col">작성일</th>
+        <th scope="col">조회</th>
+        <th scope="col">좋아요</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for article in articles %}
+      <tr align="center" style="border-bottom: 1px solid #a8afad;">
+        <td colspan="2">{{ article.pk }}</td>
+        <td align="left"><a href="{% url 'community:detail' article.pk %}">{{ article.title }}[{{  article.comment_set.all|length }}]</a></td>
+        <td align="left"><a href="{% url 'accounts:profile' article.user %}">{{ article.user }}</a></td>
+        <td>{{ article.date }}</td>
+        <td>{{ article.hits }}</td>
+        <td>{{ article.like_users.all|length }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    
+  </table>
+  <div>
+  <div style="width: 30%; text-align: right;">
+  <a href="{% url 'community:create' %}">[CREATE]</a>
+  </div>
+  <div style="width: 30%;">
+  {% for num in articles.paginator.page_range %}
+<a href="{% url 'community:index' %}?page={{ num }}">{{ num }}</a>
+{% endfor %}
+  </div>
+</div>
+</div>
+</span>
+</div>
+<div class="tab-pane container fade" id="community2">B</div>
+</div>
+
+<script src="{% static 'community/js/like.js' %}"></script>
+{% endblock %}

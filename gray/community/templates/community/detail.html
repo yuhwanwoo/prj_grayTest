@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+
+<table border="0" cellspacing="0" cellpadding="0" class="article_resume">
+  <colgroup>
+    <col width="90">
+    <col>
+  </colgroup>
+  <tbody>
+    <tr>
+      <td height="20">Date</td>
+      <td>{{ article.date }}</td>
+    </tr>
+    <tr>
+      <td height="20">Name</td>
+      <td align="left" width="100%" style="font-weight: bold;">
+        <span>
+          {{ article.user }}
+        </span>
+    </td>
+    </tr>
+    <tr>
+      <td style="border-bottom:10px solid #e5e5e5;" height="20">Subject:</td>
+      <td style="border-bottom:1px solid #e5e5e5;">
+        {{ article.title }}
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+      <span style="line-height:160%;">
+        <div>
+          {{ article.content|safe }}
+          {% if article.image %}
+          <img src="{{ article.image.url }}" alt="{{ article.image }}">
+          {% endif %}
+        </div>
+
+      </span>
+    </td>
+    </tr>
+  </tbody>
+</table>
+<hr>
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcROv1dxMSHyOQsMsTnEZpk26lrapjB50z4ckQ&usqp=CAU" alt="">
+<hr>
+<div class="like">
+{% include 'community/_like.html' %}
+</div>
+<hr>
+
+<!-- 댓글 시작-->
+<div id="commentTop"></div>
+{% for comment in comments %}
+<div style="height:auto !important; margin: 10px; border-bottom: 4px solid #64bd9f;">
+  <div>
+    <div>
+      <a href=""></a>
+      <span class="vc_left">
+        <span></span>
+        <span>{{ comment.user }}
+        </span>
+      </span>
+      <div class="vc_right">
+        <span class="time">
+          <span style="font-style: inherit 1px;">2020.07.01</span>
+        </span>
+        <span class="vc_right">
+          {% if comment.user.username == user.username %}
+          <form action="{% url 'community:comment_delete' article.pk comment.pk %}" method="POST">
+          {% csrf_token %}
+          <input type="submit" value="댓글 삭제">
+          </form>
+          {% endif %}
+        </span>
+      </div>
+      <div class="content">
+        <span class="vc_in_right">{{ comment.content }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+{% empty %}
+<p>댓글이 없습니다.</p>
+{% endfor %}
+
+
+<hr>
+<form action="{% url 'community:comment_create' article.pk %}" method="POST">
+  {% csrf_token %}
+  {{ comment_form }}
+  <input type="submit" value="댓글생성">
+</form>
+<hr>
+{% if article.user.username == user.username %}
+<a href="{% url 'community:update' article.pk %}">[UPDATE]</a>
+<form action="{% url 'community:delete' article.pk %}" method="POST">
+  {% csrf_token %}
+  <input type="submit" value="DELETE" class="btn btn-primary">
+</form>
+{% endif %}
+
+<a href="{% url 'community:index' %}">[back]</a>
+<script src="{% static 'community/js/like.js' %}"></script>
+</div>
+{% endblock %}
